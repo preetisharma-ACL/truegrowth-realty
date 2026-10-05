@@ -6754,3 +6754,27 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 
 /* banner form button: flat, no shadow */
 .hform__submit, .hform__submit:hover { box-shadow: none; }
+
+/* WhatsApp button: locked to a 56px disc so it can never be squeezed into a
+   tall pill; it still widens to show its label on hover */
+.float-wa { box-sizing: border-box; min-width: 56px; height: 56px; max-height: 56px; flex-direction: row; flex-wrap: nowrap; line-height: 1; }
+.float-wa__icon { width: 56px; min-width: 56px; height: 56px; }
+.float-wa__icon svg { display: block; flex: none; }
+
+
+
+/* Developers banner: the artwork carries the developer logos on its left half,
+   so the page name moves to the right half and only that side is shaded */
+.phero--devs .phero__shade {
+  background: linear-gradient(90deg, rgba(4, 20, 40, 0) 0%, rgba(4, 20, 40, 0) 46%, rgba(4, 20, 40, 0.55) 72%, rgba(4, 20, 40, 0.7) 100%);
+}
+.phero--devs .phero__bg img { object-position: left center; }
+.phero--devs .phero__inner { justify-items: end; text-align: right; }
+.phero--devs .phero__inner > * { width: min(46%, 560px); }
+.phero--devs .phero__crumbs { width: fit-content; }
+@media (max-width: 991.98px) {
+  /* on narrow screens the logos fill the width, so the text sits under a full shade */
+  .phero--devs .phero__shade { background: rgba(4, 20, 40, 0.55); }
+  .phero--devs .phero__inner { justify-items: center; text-align: center; }
+  .phero--devs .phero__inner > * { width: auto; }
+}
