@@ -6044,8 +6044,6 @@ img { max-width: 100%; display: block; }
   color: #fff;
 }
 
-/* popup: with email gone, "Interested in" takes the full row */
-#modalForm .eform__field:has(select) { grid-column: 1 / -1; }
 
 /* ==========================================================================
    Project details: amenities as a full-width photo band
@@ -6753,3 +6751,6 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
   .cfilter__search { flex: 1 1 100%; }
   .cfilter__field { flex: 1 1 calc(50% - 5px); justify-content: space-between; }
 }
+
+/* banner form button: flat, no shadow */
+.hform__submit, .hform__submit:hover { box-shadow: none; }
