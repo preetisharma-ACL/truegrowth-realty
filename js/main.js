@@ -1206,3 +1206,81 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   if (crumb) crumb.textContent = 'Developers in ' + city;
   document.title = 'Developers in ' + city + ' | Truegrowth Realty';
 })();
+
+/* ==========================================================================
+   Category page (property-type.html?type=…): filter bar over the project grid.
+   Type chips are per category; each card lists its sub-types in data-sub.
+   ========================================================================== */
+(function () {
+  const bar = document.querySelector('[data-cfilter]');
+  const grid = document.querySelector('.cprojects__grid');
+  if (!bar || !grid) return;
+  const SUBS = {
+    residential: [['apartments', 'Apartments'], ['villas', 'Villas & Floors'], ['penthouses', 'Penthouses']],
+    commercial: [['retail', 'Retail Shops'], ['office', 'Office Space'], ['food-court', 'Food Court'], ['studio', 'Studios']],
+    plots: [['plots', 'Residential Plots']],
+  };
+  const cat = document.documentElement.getAttribute('data-cat') || 'residential';
+  const items = [...grid.querySelectorAll('.cprojects__item')];
+  const mine = items.filter((it) => it.dataset.type === cat);
+  const original = items.slice();
+  const subsEl = bar.querySelector('[data-csubs]');
+  const searchEl = bar.querySelector('[data-csearch]');
+  const cityEl = bar.querySelector('[data-ccity]');
+  const sortEl = bar.querySelector('[data-csort]');
+  const countEl = document.querySelector('[data-ccount]');
+  const empty = document.querySelector('[data-cprojects-empty]');
+  const state = { sub: '', q: '', city: '', sort: '' };
+  const has = (it, sub) => (' ' + (it.dataset.sub || '') + ' ').includes(' ' + sub + ' ');
+
+  // type chips with counts
+  const chip = (key, label, n) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'cfilter__chip' + (key === state.sub ? ' is-active' : '');
+    b.dataset.sub = key;
+    b.setAttribute('role', 'tab');
+    b.append(label + ' ', Object.assign(document.createElement('span'), { textContent: n }));
+    return b;
+  };
+  subsEl.replaceChildren(chip('', 'All', mine.length), ...(SUBS[cat] || []).map(([k, l]) => chip(k, l, mine.filter((it) => has(it, k)).length)));
+
+  // locations present in this category
+  [...new Set(mine.map((it) => it.dataset.city))].sort().forEach((c) => cityEl.append(new Option(c, c)));
+
+  const price = (it) => { const v = Number(it.querySelector('.pc')?.dataset.price); return v || null; };
+  const apply = () => {
+    const q = state.q.trim().toLowerCase();
+    let shown = 0;
+    items.forEach((it) => {
+      const pc = it.querySelector('.pc');
+      const ok = it.dataset.type === cat
+        && (!state.sub || has(it, state.sub))
+        && (!state.city || it.dataset.city === state.city)
+        && (!q || (pc?.dataset.name || '').includes(q));
+      it.hidden = !ok;
+      if (ok) shown++;
+    });
+    // order
+    let order = original.slice();
+    if (state.sort === 'name') order.sort((a, b) => a.querySelector('.pc__name').textContent.localeCompare(b.querySelector('.pc__name').textContent));
+    if (state.sort.startsWith('price')) {
+      const dir = state.sort === 'price-asc' ? 1 : -1;
+      order.sort((a, b) => { const x = price(a), y = price(b); if (x === null) return 1; if (y === null) return -1; return (x - y) * dir; });
+    }
+    order.forEach((it) => grid.append(it));
+    subsEl.querySelectorAll('.cfilter__chip').forEach((b) => b.classList.toggle('is-active', b.dataset.sub === state.sub));
+    if (countEl) countEl.textContent = shown + (shown === 1 ? ' project' : ' projects');
+    if (empty) empty.hidden = shown > 0;
+  };
+  subsEl.addEventListener('click', (e) => { const b = e.target.closest('.cfilter__chip'); if (b) { state.sub = b.dataset.sub; apply(); } });
+  searchEl.addEventListener('input', () => { state.q = searchEl.value; apply(); });
+  cityEl.addEventListener('change', () => { state.city = cityEl.value; apply(); });
+  sortEl.addEventListener('change', () => { state.sort = sortEl.value; apply(); });
+  document.querySelector('[data-creset]')?.addEventListener('click', () => {
+    Object.assign(state, { sub: '', q: '', city: '', sort: '' });
+    searchEl.value = ''; cityEl.value = ''; sortEl.value = '';
+    apply();
+  });
+  apply();
+})();
