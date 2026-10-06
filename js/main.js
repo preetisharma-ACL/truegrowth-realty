@@ -1201,7 +1201,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   if (eyebrow) eyebrow.textContent = shown.length + (shown.length === 1 ? ' developer' : ' developers');
   if (title) title.innerHTML = 'Developers in <em></em>';
   if (title) title.querySelector('em').textContent = city;
-  if (link) { link.href = 'developers.html'; link.textContent = 'See all developers →'; }
+  if (link) { link.href = 'developers.html'; link.firstChild.textContent = 'See all developers'; }
   const crumb = document.querySelector('.phero__crumbs [aria-current]');
   if (crumb) crumb.textContent = 'Developers in ' + city;
   document.title = 'Developers in ' + city + ' | Truegrowth Realty';
