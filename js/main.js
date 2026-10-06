@@ -1284,3 +1284,41 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   });
   apply();
 })();
+
+/* ==========================================================================
+   Testimonials: hover a column and scroll its cards with the mouse wheel.
+   The column's auto-slide stops while the pointer is on it, the wheel moves
+   the cards (looping), and the slide resumes from that spot on leaving.
+   ========================================================================== */
+(function () {
+  const cols = document.querySelectorAll('.tst__col');
+  if (!cols.length) return;
+  cols.forEach((col) => {
+    const track = col.querySelector('.tst__track');
+    if (!track) return;
+    const down = col.classList.contains('tst__col--down');
+    const duration = () => parseFloat(getComputedStyle(track).animationDuration) || 46;
+    let y = 0;
+    const half = () => track.scrollHeight / 2;
+    const wrap = () => { const h = half(); while (y > 0) y -= h; while (y <= -h) y += h; };
+    col.addEventListener('mouseenter', () => {
+      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+      y = m.m42;
+      track.style.animation = 'none';
+      track.style.transform = `translateY(${y}px)`;
+    });
+    col.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      y -= e.deltaY;
+      wrap();
+      track.style.transform = `translateY(${y}px)`;
+    }, { passive: false });
+    col.addEventListener('mouseleave', () => {
+      const d = duration();
+      const p = Math.min(Math.max(-y / half(), 0), 1); // 0 = top, 1 = halfway
+      track.style.transform = '';
+      track.style.animation = '';
+      track.style.animationDelay = `${-(down ? 1 - p : p) * d}s`;
+    });
+  });
+})();
