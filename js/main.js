@@ -1292,7 +1292,9 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
    ========================================================================== */
 (function () {
   const cols = document.querySelectorAll('.tst__col');
-  if (!cols.length) return;
+  // only with a real mouse: on touch screens the page must keep scrolling over the cards
+  if (!cols.length || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  cols.forEach((col) => col.setAttribute('data-lenis-prevent', ''));
   cols.forEach((col) => {
     const track = col.querySelector('.tst__track');
     if (!track) return;
@@ -1320,5 +1322,64 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
       track.style.animation = '';
       track.style.animationDelay = `${-(down ? 1 - p : p) * d}s`;
     });
+  });
+})();
+
+/* Mobile menu: parents with sub-pages open and close like a dropdown */
+(function () {
+  document.querySelectorAll('.mobile-menu__links > li').forEach((li) => {
+    const link = li.querySelector(':scope > a');
+    if (!link || !li.querySelector(':scope > .mobile-menu__sub')) return;
+    link.setAttribute('aria-expanded', 'false');
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = !li.classList.contains('is-open');
+      li.parentElement.querySelectorAll(':scope > li.is-open').forEach((o) => { o.classList.remove('is-open'); o.querySelector(':scope > a').setAttribute('aria-expanded', 'false'); });
+      li.classList.toggle('is-open', open);
+      link.setAttribute('aria-expanded', String(open));
+    });
+  });
+})();
+
+/* Testimonials on phones and tablets: touch the cards and drag, and the list
+   follows your finger - the touch version of the desktop wheel. The column
+   stops auto-sliding while touched and carries on from there when released. */
+(function () {
+  document.querySelectorAll('.tst__col').forEach((col) => {
+    const track = col.querySelector('.tst__track');
+    if (!track) return;
+    const down = col.classList.contains('tst__col--down');
+    let y = 0;
+    let lastY = 0;
+    let dragging = false;
+    const half = () => track.scrollHeight / 2;
+    const wrap = () => { const h = half(); while (y > 0) y -= h; while (y <= -h) y += h; };
+    col.addEventListener('touchstart', (e) => {
+      dragging = true;
+      lastY = e.touches[0].clientY;
+      y = new DOMMatrixReadOnly(getComputedStyle(track).transform).m42;
+      track.style.animation = 'none';
+      track.style.transform = `translateY(${y}px)`;
+    }, { passive: true });
+    col.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      e.preventDefault(); // the cards move, not the page
+      const cy = e.touches[0].clientY;
+      y += cy - lastY;
+      lastY = cy;
+      wrap();
+      track.style.transform = `translateY(${y}px)`;
+    }, { passive: false });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      const d = parseFloat(getComputedStyle(track).animationDuration) || 46;
+      const p = Math.min(Math.max(-y / half(), 0), 1);
+      track.style.transform = '';
+      track.style.animation = '';
+      track.style.animationDelay = `${-(down ? 1 - p : p) * d}s`;
+    };
+    col.addEventListener('touchend', release, { passive: true });
+    col.addEventListener('touchcancel', release, { passive: true });
   });
 })();

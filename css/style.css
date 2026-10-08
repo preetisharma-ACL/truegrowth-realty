@@ -7007,3 +7007,207 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 @media (max-width: 991.98px) {
   .search__field { background: rgba(14, 22, 32, 0.05); }
 }
+
+/* ==========================================================================
+   Mobile menu: a clean white panel
+   Logo and close button on top, the main links in clear dark type with thin
+   dividers, sub-pages indented along a light guide line, contact at the foot.
+   ========================================================================== */
+.mobile-menu {
+  --bs-offcanvas-width: min(88vw, 380px);
+  padding: 18px 22px 26px;
+  color: #0e1620;
+  background: #fff;
+  box-shadow: -30px 0 60px -30px rgba(4, 34, 63, 0.45);
+}
+.mobile-menu__head { padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.mobile-menu .logo--light .logo__img { height: 38px; padding: 0; border-radius: 0; background: none; }
+.mobile-menu__close {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  color: #0e1620;
+  background: #f4f7fb;
+  transition: background 0.3s, color 0.3s;
+}
+.mobile-menu__close:hover { background: #04223f; color: #fff; }
+.mobile-menu__links { margin: 8px 0 auto; }
+.mobile-menu__links > li > a {
+  align-items: center;
+  gap: 0;
+  padding: 15px 2px;
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: #0e1620;
+  border-bottom: 1px solid var(--line);
+}
+.mobile-menu__links > li > a:hover { color: #1f5fa8; padding-left: 6px; }
+/* a parent that has sub-pages loses its divider; the sub list carries it */
+.mobile-menu__links > li > a:has(+ .mobile-menu__sub) { border-bottom: 0; padding-bottom: 8px; }
+.mobile-menu__sub {
+  margin: 0 0 4px;
+  padding: 0 0 12px 14px;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+}
+.mobile-menu__links .mobile-menu__sub li { border-left: 2px solid #e3ebf5; }
+.mobile-menu__links .mobile-menu__sub a {
+  padding: 8px 0 8px 14px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #5a6575;
+}
+.mobile-menu__links .mobile-menu__sub a:hover { color: #1f5fa8; padding-left: 18px; }
+.mobile-menu__links .mobile-menu__sub li:has(a:hover) { border-left-color: #1f5fa8; }
+
+.mobile-menu__foot {
+  gap: 4px;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #f4f7fb;
+  color: #3d4756;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.mobile-menu__foot a:not(.btn-lux):hover { color: #1f5fa8; }
+.mobile-menu__foot .btn-lux { justify-self: stretch; justify-content: space-between; color: #fff; background: linear-gradient(135deg, #06264d 0%, #020f22 100%); }
+.mobile-menu__foot .btn-lux:hover { color: #fff; background: linear-gradient(135deg, #0a3566 0%, #06264d 100%); }
+.mobile-menu__foot .btn-lux .btn-icon { color: #fff; background: rgba(255, 255, 255, 0.14); }
+
+/* mobile menu: About Us and Projects open as simple dropdowns */
+.mobile-menu__links > li > a:has(+ .mobile-menu__sub) {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 15px;
+}
+.mobile-menu__links > li > a:has(+ .mobile-menu__sub)::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 0.35s var(--ease);
+}
+.mobile-menu__links > li.is-open > a::after { transform: rotate(225deg) translateY(-3px); }
+.mobile-menu__links > li.is-open > a { color: #1f5fa8; border-bottom-color: transparent; padding-bottom: 8px; }
+.mobile-menu__sub { display: none; }
+.mobile-menu__links > li.is-open > .mobile-menu__sub { display: grid; animation: mmDrop 0.3s var(--ease); }
+@keyframes mmDrop { from { opacity: 0; transform: translateY(-6px); } }
+
+/* ==========================================================================
+   Mobile menu, matched to the reference: full-screen white sheet, plain
+   regular-weight links with hairline dividers, a faint logo watermark in the
+   open space, and contact plus a pill button pinned to the bottom.
+   ========================================================================== */
+.mobile-menu {
+  --bs-offcanvas-width: 100vw;
+  padding: 18px 22px 28px;
+  box-shadow: none;
+}
+.mobile-menu__head { padding-bottom: 18px; }
+.mobile-menu__close { width: 44px; height: 44px; background: #fff; }
+.mobile-menu__links { margin: 6px 0 0; position: relative; z-index: 1; }
+.mobile-menu__links > li > a {
+  padding: 18px 2px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.mobile-menu__links > li > a:has(+ .mobile-menu__sub) { padding-bottom: 18px; }
+.mobile-menu__links > li > a:has(+ .mobile-menu__sub)::after { width: 8px; height: 8px; border-width: 0 1.5px 1.5px 0; color: #5a6575; }
+.mobile-menu__links > li.is-open > a { padding-bottom: 10px; }
+.mobile-menu__links .mobile-menu__sub a { font-size: 15.5px; }
+
+/* the faint watermark in the empty space below the links */
+.mobile-menu::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 73%;
+  width: 46%;
+  aspect-ratio: 781 / 219;
+  transform: translate(-50%, -50%);
+  background: url('../assets/images/truegrowth-realty.png') center / contain no-repeat;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.mobile-menu__foot {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding: 24px 2px 0;
+  border-radius: 0;
+  background: none;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7686;
+}
+.mobile-menu__foot .btn-lux {
+  justify-self: stretch;
+  justify-content: center;
+  gap: 16px;
+  height: 58px;
+  margin-top: 18px !important;
+  border-radius: 999px;
+  font-size: 17px;
+  color: #0e1620;
+  background: var(--brand);
+}
+.mobile-menu__foot .btn-lux:hover { color: #0e1620; background: var(--accent); }
+.mobile-menu__foot .btn-lux .btn-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #fff;
+  background: #0e1620;
+}
+
+/* mobile menu, closer to the reference: open sub-pages sit in a soft grey
+   rounded box, no focus ring after a tap, and no watermark while a menu is open */
+.mobile-menu__links a:focus:not(:focus-visible),
+.mobile-menu__close:focus:not(:focus-visible) { outline: none; box-shadow: none; }
+.mobile-menu__links > li.is-open { border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+.mobile-menu__links > li.is-open > a { padding-bottom: 14px; }
+.mobile-menu__links > li.is-open > .mobile-menu__sub {
+  margin: 0;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 14px;
+  background: #f3f5f9;
+}
+.mobile-menu__links .mobile-menu__sub li { border-left: 0; }
+.mobile-menu__links .mobile-menu__sub a {
+  padding: 11px 18px;
+  font-size: 15.5px;
+  font-weight: 500;
+  color: #3d4756;
+}
+.mobile-menu__links .mobile-menu__sub a:hover { padding-left: 22px; color: #1f5fa8; }
+.mobile-menu:has(.is-open)::after { display: none; }
+
+/* footer on phones: brand and contact take the full width, while the two link
+   lists (Explore, Properties) sit side by side as two equal columns */
+@media (max-width: 575.98px) {
+  .footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+  .footer__grid > :not(.footer__col), .footer__grid > :last-child { grid-column: 1 / -1; }
+}
+
+/* Why Choose TGR on phones: the cards stack as you scroll - each one pins just
+   under the header, 12px lower than the last, and the next slides up over it */
+@media (max-width: 575.98px) {
+  .whyus__stack { gap: 16px; padding-bottom: 8px; }
+  .whyc {
+    position: sticky;
+    top: calc(var(--hdr-h) + 16px + var(--i) * 12px);
+    width: 100%;
+    border-radius: 16px;
+  }
+  .whyc:hover { transform: none; }
+}
