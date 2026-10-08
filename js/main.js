@@ -1413,3 +1413,39 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   window.addEventListener('resize', onScroll);
   update();
 })();
+
+/* Testimonials: the featured review sits in the middle with its neighbours
+   above and below; it advances on its own, and a tap, a dot or a swipe moves it */
+(function () {
+  const stage = document.querySelector('[data-reviews]');
+  if (!stage) return;
+  const cards = [...stage.querySelectorAll('.rcard')];
+  if (cards.length < 2) return;
+  let i = 0;
+  let timer;
+  stage.querySelector('[data-review-prev]')?.addEventListener('click', () => go(i - 1));
+  stage.querySelector('[data-review-next]')?.addEventListener('click', () => go(i + 1));
+  const go = (n) => {
+    i = (n + cards.length) % cards.length;
+    cards.forEach((c, k) => {
+      c.classList.toggle('is-active', k === i);
+      c.classList.toggle('is-prev', k === (i - 1 + cards.length) % cards.length);
+      c.classList.toggle('is-next', k === (i + 1) % cards.length);
+    });
+    clearInterval(timer);
+    timer = setInterval(() => go(i + 1), 4500);
+  };
+  cards.forEach((c, k) => c.addEventListener('click', () => { if (k !== i) go(k); }));
+  // swipe up / down on touch screens
+  let sy = null;
+  stage.addEventListener('touchstart', (e) => { sy = e.touches[0].clientY; }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
+    if (sy === null) return;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dy) > 40) go(i + (dy < 0 ? 1 : -1));
+    sy = null;
+  }, { passive: true });
+  stage.addEventListener('mouseenter', () => clearInterval(timer));
+  stage.addEventListener('mouseleave', () => go(i));
+  go(0);
+})();
