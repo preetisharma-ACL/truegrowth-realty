@@ -7627,3 +7627,11 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 .stabs__btn,
 .price-table__btn,
 .mobile-menu__foot .btn-lux { border-radius: 999px; }
+
+/* testimonials: the two auto-sliding columns on desktop and tablet, the glass
+   single-card section on phones */
+.treviews--mobile { display: none; }
+@media (max-width: 767.98px) {
+  .tst--desktop { display: none; }
+  .treviews--mobile { display: block; }
+}
