@@ -99,7 +99,9 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
 
     // Oversized wordmarks drift sideways against the scroll, so the band reads
     // as a moving backdrop rather than a static piece of type.
+    const narrow = window.matchMedia('(max-width: 575.98px)').matches; // phones: no sideways drift, keep things centred
     gsap.utils.toArray('[data-drift]').forEach((el) => {
+      if (narrow) return;
       gsap.fromTo(el, { xPercent: 6 }, { xPercent: -6, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
 
@@ -112,6 +114,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
       const move = SHIFTS[el.dataset.shift];
       if (!move) return;
       const [axis, sign] = move;
+      if (narrow && axis === 'x') return;
       const half = (Number(el.dataset.shiftBy) || 70) * sign * 0.5;
       const section = el.closest('section') || el.parentElement;
       gsap.fromTo(el, { [axis]: -half }, {
@@ -1382,4 +1385,31 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
     col.addEventListener('touchend', release, { passive: true });
     col.addEventListener('touchcancel', release, { passive: true });
   });
+})();
+
+/* Core values on phones: as each card is covered by the next, it eases back
+   (a touch smaller and dimmer) so the pile reads as depth, not a flat overlap */
+(function () {
+  const items = [...document.querySelectorAll('.cvalues__grid > li')];
+  if (items.length < 2) return;
+  const mq = window.matchMedia('(max-width: 767.98px)');
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    items.forEach((li, i) => {
+      const card = li.querySelector('.cval');
+      if (!card) return;
+      if (!mq.matches || i === items.length - 1) { card.style.transform = ''; card.style.filter = ''; return; }
+      const next = items[i + 1].getBoundingClientRect();
+      const mine = li.getBoundingClientRect();
+      // 0 while the next card is still below this one, 1 once it fully covers it
+      const p = Math.min(Math.max((mine.bottom - next.top) / mine.height, 0), 1);
+      card.style.transform = `scale(${1 - p * 0.06})`;
+      card.style.filter = `brightness(${1 - p * 0.25})`;
+    });
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
 })();

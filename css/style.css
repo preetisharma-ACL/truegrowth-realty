@@ -7211,3 +7211,64 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
   }
   .whyc:hover { transform: none; }
 }
+
+/* Who We Are on phones: the small photo and the Truegrowth wordmark sit centred */
+@media (max-width: 575.98px) {
+  .wabout__sm { justify-self: center; width: 100%; }
+  .wabout__sm figure { transform: none !important; }
+  .vmark__word { transform: none !important; text-align: center; font-size: clamp(44px, 14vw, 64px); }
+  .vmark__art { right: 50%; transform: translateX(50%); }
+}
+
+/* pill buttons: the arrow inside is a full circle to match the pill */
+.btn-lux--pill .btn-icon { border-radius: 50%; }
+.btn-lux--pill { padding-right: 8px; }
+
+/* breadcrumbs: plain text on the banner - no pill, border, blur or tint */
+.phero__crumbs,
+.pdhead .phero__crumbs {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  font-size: 14px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+}
+.phero__crumbs a { color: rgba(255, 255, 255, 0.9); }
+.phero__crumbs span { color: #fff; font-weight: 600; }
+
+/* Core values on phones: the four cards stack as you scroll. Each pins under
+   the header a little lower than the last; main.js eases the covered ones back */
+@media (max-width: 767.98px) {
+  .cvalues__grid { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-bottom: 12px; }
+  .cvalues__grid > li { margin-top: 0 !important; position: sticky; top: calc(var(--hdr-h) + 18px); }
+  .cvalues__grid > li:nth-child(2) { top: calc(var(--hdr-h) + 30px); }
+  .cvalues__grid > li:nth-child(3) { top: calc(var(--hdr-h) + 42px); }
+  .cvalues__grid > li:nth-child(4) { top: calc(var(--hdr-h) + 54px); }
+  .cval { min-height: 0; transform-origin: center top; transition: box-shadow 0.45s var(--ease); will-change: transform, filter; }
+  .cval:hover { transform: none; }
+}
+
+/* clip (not hidden) still crops the blobs but lets the cards stick */
+.cvalues { overflow: clip; }
+
+/* careers on phones: title on its own line with the toggle beside it, then
+   the positions pill and the job type on a second line */
+@media (max-width: 575.98px) {
+  .job__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title toggle" "meta toggle";
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 8px;
+  }
+  .job__title { grid-area: title; font-size: 18px; line-height: 1.25; }
+  .job__toggle { grid-area: toggle; opacity: 1; }
+  .job__openings, .job[open] .job__type { grid-row: 2; grid-column: 1; justify-self: start; }
+  .job[open] .job__type { justify-self: end; }
+  .job__place { display: none; }
+}
