@@ -7635,3 +7635,99 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
   .tst--desktop { display: none; }
   .treviews--mobile { display: block; }
 }
+
+/* ==========================================================================
+   Homepage hero: a smaller, refined headline with a soft light sheen that
+   sweeps across it, and the popular-location chips under the search
+   ========================================================================== */
+.hero__title {
+  font-size: clamp(28px, 3.1vw, 44px);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 14px rgba(8, 14, 34, 0.45));
+}
+.hero__title .line > span,
+.hero__title em {
+  color: transparent;
+  background: linear-gradient(110deg, #ffffff 0%, #ffffff 40%, #cfe6ff 47%, #ffffff 50%, #e6f2ff 53%, #ffffff 60%, #ffffff 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: heroSheen 6s ease-in-out infinite;
+}
+@keyframes heroSheen { 0%, 20% { background-position: 120% 0; } 70%, 100% { background-position: -40% 0; } }
+@media (prefers-reduced-motion: reduce) { .hero__title .line > span, .hero__title em { animation: none; } }
+
+.popular { margin-top: 24px; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.popular__label { color: #fff; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4); }
+.popular__chip {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+}
+.popular__chip:hover { background: #fff; color: #04223f; border-color: #fff; }
+@media (max-width: 767.98px) {
+  .popular { gap: 8px; margin-top: 18px; }
+  .popular__label { width: 100%; text-align: center; margin: 0; }
+}
+
+/* hero headline: a polished-metal finish on every letter - bright white at the
+   top shading to cool silver-blue, a fine light band through the middle, and a
+   gloss that sweeps across on a loop */
+.hero__title .line > span,
+.hero__title em {
+  background:
+    linear-gradient(110deg, transparent 0%, transparent 40%, rgba(255, 255, 255, 0.95) 48%, transparent 56%, transparent 100%),
+    linear-gradient(180deg, #ffffff 0%, #ffffff 26%, #cfe2f8 50%, #ffffff 58%, #e3effc 70%, #8fb6e3 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: heroSheen 5s ease-in-out infinite;
+}
+@keyframes heroSheen { 0%, 15% { background-position: 130% 0, 0 0; } 65%, 100% { background-position: -50% 0, 0 0; } }
+.hero__title { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35)) drop-shadow(0 4px 18px rgba(8, 14, 34, 0.5)); }
+
+/* hero headline: a touch of gold - champagne at the base of each letter, a
+   warm golden gloss that sweeps across, and a slow breathing golden glow */
+.hero__title .line > span,
+.hero__title em {
+  background:
+    linear-gradient(110deg, transparent 0%, transparent 40%, rgba(255, 231, 168, 0.95) 46%, #fff6dc 49%, rgba(255, 219, 140, 0.9) 52%, transparent 58%, transparent 100%),
+    linear-gradient(180deg, #ffffff 0%, #ffffff 28%, #f3f6fb 48%, #ffffff 56%, #f8ecd0 72%, #e2bf7c 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: heroSheen 4.5s ease-in-out infinite;
+}
+.hero__title { animation: heroGlow 4.5s ease-in-out infinite; }
+@keyframes heroGlow {
+  0%, 100% { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.3)) drop-shadow(0 4px 16px rgba(8, 14, 34, 0.5)) drop-shadow(0 0 0 rgba(226, 191, 124, 0)); }
+  50% { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.4)) drop-shadow(0 4px 16px rgba(8, 14, 34, 0.45)) drop-shadow(0 0 18px rgba(226, 191, 124, 0.45)); }
+}
+@media (prefers-reduced-motion: reduce) { .hero__title { animation: none; } }
+
+/* hero headline: premium blue - white shading into deep sapphire, an icy-blue
+   gloss sweeping across and a soft royal-blue glow (replaces the gold) */
+.hero__title .line > span,
+.hero__title em {
+  background:
+    linear-gradient(110deg, transparent 0%, transparent 40%, rgba(190, 225, 255, 0.95) 46%, #ffffff 49%, rgba(150, 205, 255, 0.9) 52%, transparent 58%, transparent 100%),
+    linear-gradient(180deg, #ffffff 0%, #ffffff 26%, #e4f0fd 46%, #ffffff 54%, #9cc6f2 72%, #3f7fcf 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@keyframes heroGlow {
+  0%, 100% { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.3)) drop-shadow(0 4px 16px rgba(4, 14, 34, 0.55)) drop-shadow(0 0 0 rgba(31, 95, 168, 0)); }
+  50% { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.4)) drop-shadow(0 4px 16px rgba(4, 14, 34, 0.5)) drop-shadow(0 0 20px rgba(63, 127, 207, 0.6)); }
+}
