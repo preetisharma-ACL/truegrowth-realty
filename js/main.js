@@ -1460,3 +1460,96 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
     track.scrollBy({ left: Number(b.dataset.ax) * step * 2, behavior: 'smooth' });
   }));
 })();
+
+/* Team page: the intro heading rises in word by word, and the director
+   cards filter by group */
+(function () {
+  const title = document.querySelector('[data-tin-words]');
+  if (title) {
+    let w = 0;
+    const wrap = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.append(part); return; }
+            const s = document.createElement('span');
+            s.className = 'tw';
+            s.style.setProperty('--w', w++);
+            s.textContent = part;
+            frag.append(s);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1) wrap(n);
+      });
+    };
+    wrap(title);
+    const box = title.closest('.tintro');
+    new IntersectionObserver((es, o) => es.forEach((e) => {
+      if (e.isIntersecting) { box.classList.add('is-in'); o.disconnect(); }
+    }), { threshold: 0.3 }).observe(box);
+  }
+  const chips = document.querySelectorAll('[data-team-filter]');
+  chips.forEach((c) => c.addEventListener('click', () => {
+    chips.forEach((x) => x.classList.toggle('is-active', x === c));
+    const g = c.dataset.teamFilter;
+    document.querySelectorAll('[data-team-group]').forEach((card) => {
+      card.classList.toggle('is-hidden', g !== 'all' && card.dataset.teamGroup !== g);
+    });
+  }));
+})();
+
+/* Team statement: words ink in (and photo chips pop) as the block scrolls past */
+(function () {
+  const el = document.querySelector('[data-scrub]');
+  if (!el) return;
+  const parts = [];
+  [...el.childNodes].forEach((n) => {
+    if (n.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach((t) => {
+        if (!t) return;
+        if (/^\s+$/.test(t)) { frag.append(t); return; }
+        const s = document.createElement('span');
+        s.className = 'sw';
+        s.textContent = t;
+        frag.append(s);
+        parts.push(s);
+      });
+      n.replaceWith(frag);
+    } else if (n.nodeType === 1) parts.push(n);
+  });
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const r = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // 0 when the block's top is at 85% of the screen, 1 when it reaches 35%
+    const p = reduce ? 1 : Math.min(Math.max((vh * 0.85 - r.top) / (vh * 0.5 + r.height * 0.4), 0), 1);
+    const n = Math.round(p * parts.length);
+    parts.forEach((s, i) => s.classList.toggle('on', i < n));
+  };
+  const on = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', on, { passive: true });
+  window.addEventListener('resize', on);
+  update();
+})();
+
+/* Team cards: exactly one card is open at a time (the middle one by default,
+   otherwise the last one pointed at), so the row never changes width and
+   nothing shifts or flickers as the pointer crosses the gaps */
+(function () {
+  const grid = document.querySelector('.tmem__grid');
+  if (!grid || !window.matchMedia('(hover: hover) and (min-width: 992px)').matches) return;
+  const cards = [...grid.querySelectorAll('.tmem__card')];
+  if (!cards.length) return;
+  const def = cards[Math.floor(cards.length / 2)];
+  let timer;
+  const open = (c) => cards.forEach((x) => x.classList.toggle('is-open', x === c));
+  grid.classList.add('js-slices');
+  open(def);
+  cards.forEach((c) => c.addEventListener('mouseenter', () => { clearTimeout(timer); open(c); }));
+  grid.addEventListener('mouseleave', () => { clearTimeout(timer); timer = setTimeout(() => open(def), 350); });
+})();
