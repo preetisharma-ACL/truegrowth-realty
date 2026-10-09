@@ -1449,3 +1449,14 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   stage.addEventListener('mouseleave', () => go(i));
   go(0);
 })();
+
+/* Project amenities: arrow buttons slide the card row */
+(function () {
+  const track = document.querySelector('[data-ax-track]');
+  if (!track) return;
+  document.querySelectorAll('[data-ax]').forEach((b) => b.addEventListener('click', () => {
+    const card = track.querySelector('.ax__card');
+    const step = card ? card.getBoundingClientRect().width + 16 : 200;
+    track.scrollBy({ left: Number(b.dataset.ax) * step * 2, behavior: 'smooth' });
+  }));
+})();
