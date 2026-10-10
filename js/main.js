@@ -1663,7 +1663,9 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   };
 
   document.addEventListener('mousedown', (e) => {
-    const select = e.target.closest(SEL);
+    // a click anywhere in the field box (label, padding, arrow) counts as the select
+    const box = e.target.closest('.search__field, .cfilter__field, .fsel');
+    const select = e.target.closest(SEL) || (box && !(panel && panel.contains(e.target)) ? box.querySelector('select') : null);
     if (select) {
       e.preventDefault();
       if (owner === select) close(); else open(select);

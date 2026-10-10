@@ -9302,3 +9302,6 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 .dd__opt { padding: 7px 12px; font-size: 14px; border-radius: 9px; }
 .dd__opt svg { width: 14px; height: 14px; }
 .dd__group { padding: 8px 12px 3px; font-size: 10.5px; }
+/* the whole field box is clickable */
+.search__field, .cfilter__field, .fsel { cursor: pointer; }
+.search__field *, .cfilter__field *, .fsel * { cursor: pointer; }
