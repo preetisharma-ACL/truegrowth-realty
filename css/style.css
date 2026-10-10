@@ -9210,3 +9210,95 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 /* WhatsApp button stays a circle on hover: the text label is not shown */
 .float-wa__label, .float-wa:hover .float-wa__label, .float-wa:focus-visible .float-wa__label { display: none; }
 .float-wa:hover, .float-wa:focus-visible { width: 56px; }
+
+/* custom dropdown panel (js/main.js replaces the native list on desktop) */
+.dd {
+  position: fixed;
+  z-index: 2000;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(14, 22, 32, 0.08);
+  background: #fff;
+  box-shadow: 0 24px 50px -20px rgba(4, 34, 63, 0.35), 0 2px 8px rgba(4, 34, 63, 0.06);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.22s cubic-bezier(.2, .8, .2, 1);
+  scrollbar-width: thin;
+}
+.dd.is-in { opacity: 1; transform: none; }
+.dd__opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  color: #1b2430;
+  cursor: pointer;
+}
+.dd__opt svg { flex: none; opacity: 0; }
+.dd__opt:hover { background: #f1f5fa; }
+.dd__opt.is-sel { color: #fff; background: #1f5fa8; }
+.dd__opt.is-sel svg { opacity: 1; }
+.dd__group { padding: 10px 14px 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #8a94a3; }
+.dd-open .search__select, .dd-open select { color: #1f5fa8; }
+
+/* mobile menu: links, sub-links and icons in the same deep-blue gradient as
+   the Get Appointment button */
+.mobile-menu { --mm-grad: linear-gradient(135deg, #0a3d7a 0%, #04223f 100%); --mm-grad-hover: linear-gradient(135deg, #2a6fc0 0%, #0a3d7a 100%); }
+.mobile-menu__links > li > a,
+.mobile-menu__links .mobile-menu__sub a,
+.mobile-menu__foot a:not(.btn-lux) {
+  background-image: var(--mm-grad);
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #0a3d7a;
+}
+.mobile-menu__foot a:not(.btn-lux) { background-color: transparent; background-image: var(--mm-grad), linear-gradient(#fff, #fff); }
+.mobile-menu__links > li > a:hover,
+.mobile-menu__links > li.is-open > a,
+.mobile-menu__links .mobile-menu__sub a:hover { background-image: var(--mm-grad-hover); }
+/* the icons are painted with the gradient through their own outline */
+.mobile-menu__links > li > a::before,
+.mobile-menu__foot a:not(.btn-lux)::before { background: var(--mm-grad); -webkit-text-fill-color: initial; }
+.mobile-menu__links > li > a:hover::before,
+.mobile-menu__links > li.is-open > a::before { background: var(--mm-grad-hover); }
+/* dropdown chevrons: solid, as borders cannot take a gradient */
+.mobile-menu__links > li > a:has(+ .mobile-menu__sub)::after { color: #0a3d7a; border-color: #0a3d7a; }
+.mobile-menu__links > li.is-open > a::after { color: #2a6fc0; border-color: #2a6fc0; }
+.mobile-menu__links > li:nth-child(1) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%2010.5%2012%203l9%207.5V21a1%201%200%200%201-1%201h-5v-7H9v7H4a1%201%200%200%201-1-1z%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%2010.5%2012%203l9%207.5V21a1%201%200%200%201-1%201h-5v-7H9v7H4a1%201%200%200%201-1-1z%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+.mobile-menu__links > li:nth-child(2) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2210%22%2F%3E%3Cpath%20d%3D%22M12%2016v-4M12%208h.01%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2210%22%2F%3E%3Cpath%20d%3D%22M12%2016v-4M12%208h.01%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+.mobile-menu__links > li:nth-child(3) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%2021h18%22%2F%3E%3Cpath%20d%3D%22M5%2021V7l7-4v18%22%2F%3E%3Cpath%20d%3D%22M19%2021V11l-7-4%22%2F%3E%3Cpath%20d%3D%22M9%209v.01M9%2012v.01M9%2015v.01M9%2018v.01%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%2021h18%22%2F%3E%3Cpath%20d%3D%22M5%2021V7l7-4v18%22%2F%3E%3Cpath%20d%3D%22M19%2021V11l-7-4%22%2F%3E%3Cpath%20d%3D%22M9%209v.01M9%2012v.01M9%2015v.01M9%2018v.01%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+.mobile-menu__links > li:nth-child(4) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M12%2022s7-6.2%207-12a7%207%200%201%200-14%200c0%205.8%207%2012%207%2012z%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2210%22%20r%3D%222.5%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M12%2022s7-6.2%207-12a7%207%200%201%200-14%200c0%205.8%207%2012%207%2012z%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2210%22%20r%3D%222.5%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+.mobile-menu__links > li:nth-child(5) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M4%204h12l4%204v12H4z%22%2F%3E%3Cpath%20d%3D%22M8%2010h8M8%2014h8M8%2018h5%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M4%204h12l4%204v12H4z%22%2F%3E%3Cpath%20d%3D%22M8%2010h8M8%2014h8M8%2018h5%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+.mobile-menu__links > li:nth-child(6) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%223%22%20y%3D%227%22%20width%3D%2218%22%20height%3D%2213%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%207V5a2%202%200%200%201%202-2h2a2%202%200%200%201%202%202v2M3%2013h18%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%223%22%20y%3D%227%22%20width%3D%2218%22%20height%3D%2213%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%207V5a2%202%200%200%201%202-2h2a2%202%200%200%201%202%202v2M3%2013h18%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+.mobile-menu__links > li:nth-child(7) > a::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M22%2016.9v3a2%202%200%200%201-2.2%202%2019.8%2019.8%200%200%201-8.6-3.1%2019.5%2019.5%200%200%201-6-6A19.8%2019.8%200%200%201%202.1%204.2%202%202%200%200%201%204.1%202h3a2%202%200%200%201%202%201.7c.1.9.4%201.9.7%202.8a2%202%200%200%201-.5%202.1L8%209.9a16%2016%200%200%200%206%206l1.3-1.3a2%202%200%200%201%202.1-.4c.9.3%201.9.6%202.8.7a2%202%200%200%201%201.7%202z%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2304223f%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M22%2016.9v3a2%202%200%200%201-2.2%202%2019.8%2019.8%200%200%201-8.6-3.1%2019.5%2019.5%200%200%201-6-6A19.8%2019.8%200%200%201%202.1%204.2%202%202%200%200%201%204.1%202h3a2%202%200%200%201%202%201.7c.1.9.4%201.9.7%202.8a2%202%200%200%201-.5%202.1L8%209.9a16%2016%200%200%200%206%206l1.3-1.3a2%202%200%200%201%202.1-.4c.9.3%201.9.6%202.8.7a2%202%200%200%201%201.7%202z%22%2F%3E%3C%2Fsvg%3E") center / 20px 20px no-repeat; }
+
+/* mobile menu dropdown: the soft panel spans the full menu width; its links
+   are indented inside it to line up under the parent's text */
+.mobile-menu__links > li.is-open > .mobile-menu__sub,
+.mobile-menu .mobile-menu__links > li.is-open > .mobile-menu__sub {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 2px 0 10px;
+  padding: 6px 0;
+  border-radius: 14px;
+}
+.mobile-menu .mobile-menu__links .mobile-menu__sub a { padding: 10px 14px 10px 38px; font-size: 15px; }
+.mobile-menu .mobile-menu__links .mobile-menu__sub a:hover { padding-left: 42px; }
+
+/* dropdown panel: compact rows and a shorter list */
+.dd { max-height: 240px; padding: 5px; border-radius: 14px; }
+.dd__opt { padding: 7px 12px; font-size: 14px; border-radius: 9px; }
+.dd__opt svg { width: 14px; height: 14px; }
+.dd__group { padding: 8px 12px 3px; font-size: 10.5px; }

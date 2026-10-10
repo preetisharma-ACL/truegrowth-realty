@@ -1583,3 +1583,96 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   cards.forEach((c) => c.addEventListener('mouseenter', () => { clearTimeout(timer); open(c); }));
   grid.addEventListener('mouseleave', () => { clearTimeout(timer); timer = setTimeout(() => open(def), 350); });
 })();
+
+/* Custom dropdown panel for select boxes (desktop, mouse only).
+   The native <select> stays in place and keeps its value, keyboard behaviour
+   and change events; only the mouse-opened list is replaced by a styled panel
+   built from the select's current options each time it opens. */
+(function () {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const SEL = '.search__select, .cfilter__field select, .fsel select';
+  const tick = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+  let panel = null;
+  let owner = null;
+
+  const close = () => {
+    if (!panel) return;
+    panel.remove();
+    panel = null;
+    if (owner) owner.closest('label, .search__field')?.classList.remove('dd-open');
+    owner = null;
+  };
+
+  const choose = (select, value) => {
+    if (select.value !== value) {
+      select.value = value;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      select.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    close();
+    select.focus({ preventScroll: true });
+  };
+
+  const open = (select) => {
+    close();
+    owner = select;
+    const host = select.closest('.search__field, .cfilter__field, .fsel') || select;
+    host.classList.add('dd-open');
+    panel = document.createElement('div');
+    panel.className = 'dd';
+    panel.setAttribute('role', 'listbox');
+    const add = (opt) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dd__opt' + (opt.value === select.value ? ' is-sel' : '');
+      b.setAttribute('role', 'option');
+      b.setAttribute('aria-selected', String(opt.value === select.value));
+      b.innerHTML = '<span></span>' + tick;
+      b.firstChild.textContent = opt.textContent;
+      b.addEventListener('click', () => choose(select, opt.value));
+      panel.append(b);
+    };
+    [...select.children].forEach((node) => {
+      if (node.tagName === 'OPTGROUP') {
+        const h = document.createElement('div');
+        h.className = 'dd__group';
+        h.textContent = node.label;
+        panel.append(h);
+        [...node.children].forEach(add);
+      } else if (node.tagName === 'OPTION') add(node);
+    });
+    document.body.append(panel);
+    openY = window.scrollY;
+    const r = host.getBoundingClientRect();
+    const w = Math.max(r.width, 220);
+    let left = Math.min(r.left, window.innerWidth - w - 12);
+    panel.style.width = w + 'px';
+    panel.style.left = Math.max(12, left) + 'px';
+    const below = window.innerHeight - r.bottom;
+    // open below whenever there is reasonable room, shrinking to fit; only flip up when cramped
+    if (below >= 200 || below >= r.top) {
+      panel.style.top = (r.bottom + 8) + 'px';
+      panel.style.maxHeight = Math.min(240, below - 20) + 'px';
+    } else {
+      const h = Math.min(panel.scrollHeight, 240, r.top - 20);
+      panel.style.maxHeight = h + 'px';
+      panel.style.top = (r.top - h - 8) + 'px';
+    }
+    requestAnimationFrame(() => panel && panel.classList.add('is-in'));
+    panel.querySelector('.is-sel')?.scrollIntoView({ block: 'nearest' });
+  };
+
+  document.addEventListener('mousedown', (e) => {
+    const select = e.target.closest(SEL);
+    if (select) {
+      e.preventDefault();
+      if (owner === select) close(); else open(select);
+      return;
+    }
+    if (panel && !panel.contains(e.target)) close();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  window.addEventListener('resize', close);
+  let openY = 0;
+  window.addEventListener('scroll', (e) => { if (panel && !panel.contains(e.target) && Math.abs(window.scrollY - openY) > 6) close(); }, true);
+})();
