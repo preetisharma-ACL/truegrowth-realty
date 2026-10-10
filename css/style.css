@@ -452,7 +452,7 @@ img { max-width: 100%; display: block; }
 .is-scrolled .navbar-lux { height: 68px; }
 
 /* A wide wordmark, so height is modest; the footer shows it larger. */
-.navbar-lux .logo__img { height: 46px; }
+.navbar-lux .logo__img { height: 60px; }
 
 .navbar-lux__links {
   display: flex;
