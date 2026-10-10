@@ -9094,3 +9094,70 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 .tmem__cap::before { display: none; }
 .tmem .tmem__card .tmem__rule, .tmem__rule { display: none; }
 .tmem .tmem__card .tmem__role { margin-bottom: 16px; }
+
+/* category filter bar: search plus four dropdowns on one line */
+.cfilter__tools { flex-wrap: wrap; }
+.cfilter__search { flex: 1 1 260px; }
+.cfilter__field { flex: 0 1 auto; }
+@media (max-width: 1199.98px) { .cfilter__search { flex-basis: 100%; } .cfilter__field { flex: 1 1 calc(50% - 5px); justify-content: space-between; } }
+
+/* category filter dropdowns: stacked label over value in soft rounded boxes,
+   sharing the row equally */
+.cfilter__field {
+  position: relative;
+  flex: 1 1 0;
+  display: grid;
+  gap: 4px;
+  height: auto;
+  min-height: 72px;
+  align-content: center;
+  padding: 12px 20px;
+  border: 1px solid rgba(14, 22, 32, 0.06);
+  border-radius: 18px;
+  background: #f3f6fa;
+}
+.cfilter__field span { font-size: 11.5px; letter-spacing: 0.12em; color: #1f5fa8; }
+.cfilter__field select {
+  width: 100%;
+  padding: 0 22px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #0e1620;
+  appearance: none;
+  -webkit-appearance: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230e1620' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right center no-repeat;
+}
+.cfilter__field:focus-within { border-color: rgba(31, 95, 168, 0.4); background: #eef4fb; }
+.cfilter__tools { flex-wrap: nowrap; align-items: stretch; }
+.cfilter__search { flex: 1.2 1 0; align-self: center; }
+@media (max-width: 1199.98px) {
+  .cfilter__tools { flex-wrap: wrap; }
+  .cfilter__search { flex: 1 1 100%; }
+  .cfilter__field { flex: 1 1 calc(33.33% - 7px); }
+}
+@media (max-width: 575.98px) { .cfilter__field { flex: 1 1 100%; min-height: 64px; } }
+
+/* filter dropdowns on white, and a Reset button at the end of the row */
+.cfilter__field { background: #fff; border-color: rgba(14, 22, 32, 0.08); }
+.cfilter__field:focus-within { background: #fff; border-color: rgba(31, 95, 168, 0.45); box-shadow: 0 0 0 3px rgba(31, 95, 168, 0.08); }
+.cfilter__reset-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 72px;
+  padding: 0 22px;
+  border: 1px solid rgba(14, 22, 32, 0.12);
+  border-radius: 18px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0e1620;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.cfilter__reset-btn:hover { color: #fff; background: #04223f; border-color: #04223f; }
+.cfilter__reset-btn:hover svg { transform: rotate(-120deg); }
+.cfilter__reset-btn svg { transition: transform 0.4s var(--ease); }
+@media (max-width: 1199.98px) { .cfilter__reset-btn { flex: 1 1 calc(33.33% - 7px); min-height: 64px; } }
+@media (max-width: 575.98px) { .cfilter__reset-btn { flex: 1 1 100%; min-height: 52px; } }

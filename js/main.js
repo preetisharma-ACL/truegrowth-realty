@@ -1231,9 +1231,11 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   const searchEl = bar.querySelector('[data-csearch]');
   const cityEl = bar.querySelector('[data-ccity]');
   const sortEl = bar.querySelector('[data-csort]');
+  const statusEl = bar.querySelector('[data-cstatus]');
+  const budgetEl = bar.querySelector('[data-cbudget]');
   const countEl = document.querySelector('[data-ccount]');
   const empty = document.querySelector('[data-cprojects-empty]');
-  const state = { sub: '', q: '', city: '', sort: '' };
+  const state = { sub: '', q: '', city: '', sort: '', status: '', budget: '' };
   const has = (it, sub) => (' ' + (it.dataset.sub || '') + ' ').includes(' ' + sub + ' ');
 
   // type chips with counts
@@ -1250,6 +1252,8 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
 
   // locations present in this category
   [...new Set(mine.map((it) => it.dataset.city))].sort().forEach((c) => cityEl.append(new Option(c, c)));
+  // statuses present in this category
+  if (statusEl) [...new Set(mine.map((it) => it.querySelector('.pc')?.dataset.status).filter(Boolean))].sort().forEach((s) => statusEl.append(new Option(s, s)));
 
   const price = (it) => { const v = Number(it.querySelector('.pc')?.dataset.price); return v || null; };
   const apply = () => {
@@ -1260,6 +1264,8 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
       const ok = it.dataset.type === cat
         && (!state.sub || has(it, state.sub))
         && (!state.city || it.dataset.city === state.city)
+        && (!state.status || pc?.dataset.status === state.status)
+        && (!state.budget || (() => { const [lo, hi] = state.budget.split('-').map(Number); const v = Number(pc?.dataset.price); return v > 0 && v >= lo && v < hi; })())
         && (!q || (pc?.dataset.name || '').includes(q));
       it.hidden = !ok;
       if (ok) shown++;
@@ -1279,12 +1285,15 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   subsEl.addEventListener('click', (e) => { const b = e.target.closest('.cfilter__chip'); if (b) { state.sub = b.dataset.sub; apply(); } });
   searchEl.addEventListener('input', () => { state.q = searchEl.value; apply(); });
   cityEl.addEventListener('change', () => { state.city = cityEl.value; apply(); });
-  sortEl.addEventListener('change', () => { state.sort = sortEl.value; apply(); });
-  document.querySelector('[data-creset]')?.addEventListener('click', () => {
-    Object.assign(state, { sub: '', q: '', city: '', sort: '' });
-    searchEl.value = ''; cityEl.value = ''; sortEl.value = '';
+  sortEl?.addEventListener('change', () => { state.sort = sortEl.value; apply(); });
+  statusEl?.addEventListener('change', () => { state.status = statusEl.value; apply(); });
+  budgetEl?.addEventListener('change', () => { state.budget = budgetEl.value; apply(); });
+  document.querySelectorAll('[data-creset]').forEach((r) => r.addEventListener('click', () => {
+    Object.assign(state, { sub: '', q: '', city: '', sort: '', status: '', budget: '' });
+    searchEl.value = ''; cityEl.value = ''; if (sortEl) sortEl.value = '';
+    if (statusEl) statusEl.value = ''; if (budgetEl) budgetEl.value = '';
     apply();
-  });
+  }));
   apply();
 })();
 
