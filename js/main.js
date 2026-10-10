@@ -547,7 +547,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
 
 /* ==========================================================================
    10. Projects listing: type tabs, search, filters, sorting, pagination
-   State lives in the URL (?type=&city=&status=&budget=&sort=&page=).
+   State lives in the URL (?type=&city=&sub=&status=&budget=&page=).
    ========================================================================== */
 (function () {
   const PER_PAGE = 6;
@@ -563,7 +563,26 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   const listing = document.getElementById('listing');
 
   const field = (n) => form.elements.namedItem(n);
-  const labels = { city: 'Location', status: 'Status', budget: 'Budget' };
+  const labels = { city: 'Location', sub: 'Type', status: 'Status', budget: 'Budget' };
+  const SUBS = {
+    residential: [['apartments', 'Apartments'], ['villas', 'Villas & Floors'], ['penthouses', 'Penthouses']],
+    commercial: [['retail', 'Retail Shops'], ['office', 'Office Space'], ['food-court', 'Food Court'], ['studio', 'Studios']],
+    plots: [['plots', 'Residential Plots']],
+  };
+  const GROUP = { residential: 'Residential', commercial: 'Commercial', plots: 'Plots' };
+  const subOptions = () => {
+    const sel = field('sub');
+    const keep = state.sub;
+    sel.innerHTML = '<option value="">Any type</option>';
+    const groups = state.type === 'all' ? Object.keys(SUBS) : [state.type];
+    groups.forEach((g) => {
+      const host = state.type === 'all' ? Object.assign(document.createElement('optgroup'), { label: GROUP[g] }) : sel;
+      (SUBS[g] || []).forEach(([v, l]) => host.append(new Option(l, v)));
+      if (host !== sel) sel.append(host);
+    });
+    const ok = [...sel.options].some((o) => o.value === keep);
+    state.sub = ok ? keep : '';
+  };
 
   // ----- state <-> URL -----
   const read = () => {
@@ -574,7 +593,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
       city: u.get('city') || '',
       status: u.get('status') || '',
       budget: u.get('budget') || '',
-      sort: u.get('sort') || '',
+      sub: u.get('sub') || '',
       page: Math.max(1, Number(u.get('page')) || 1),
     };
   };
@@ -583,7 +602,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   const write = () => {
     const u = new URLSearchParams();
     if (state.type !== 'all') u.set('type', state.type);
-    ['q', 'city', 'status', 'budget', 'sort'].forEach((k) => state[k] && u.set(k, state[k]));
+    ['q', 'city', 'sub', 'status', 'budget'].forEach((k) => state[k] && u.set(k, state[k]));
     if (state.page > 1) u.set('page', String(state.page));
     const qs = u.toString();
     try { history.replaceState(null, '', qs ? `?${qs}` : location.pathname); } catch (err) {}
@@ -595,11 +614,11 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
       t.classList.toggle('is-active', on);
       t.setAttribute('aria-selected', String(on));
     });
-    ['q', 'city', 'status', 'budget', 'sort'].forEach((k) => {
+    ['q', 'city', 'sub', 'status', 'budget'].forEach((k) => {
       const el = field(k);
       el.value = state[k];
       const wrap = el.closest('.fsel');
-      if (wrap) wrap.classList.toggle('is-set', !!state[k] && k !== 'sort');
+      if (wrap) wrap.classList.toggle('is-set', !!state[k]);
     });
   };
 
@@ -608,6 +627,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
     const price = Number(c.dataset.price);
     if (state.type !== 'all' && c.dataset.type !== state.type) return false;
     if (state.city && c.dataset.city !== state.city) return false;
+    if (state.sub && !(' ' + (c.dataset.sub || '') + ' ').includes(' ' + state.sub + ' ')) return false;
     if (state.status && c.dataset.status !== state.status) return false;
     if (state.budget) {
       const opt = field('budget').querySelector(`option[value="${state.budget}"]`);
@@ -625,14 +645,14 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
       'price-asc': (a, b) => Number(a.dataset.price) - Number(b.dataset.price),
       'price-desc': (a, b) => Number(b.dataset.price) - Number(a.dataset.price),
       name: (a, b) => a.querySelector('.pc__name').textContent.localeCompare(b.querySelector('.pc__name').textContent),
-    }[state.sort] || ((a, b) => Number(a.dataset.index) - Number(b.dataset.index));
+    }[''] || ((a, b) => Number(a.dataset.index) - Number(b.dataset.index));
     return [...list].sort(by);
   };
 
   // ----- rendering -----
   const renderChips = () => {
     chipsEl.innerHTML = '';
-    ['city', 'status', 'budget'].forEach((k) => {
+    ['city', 'sub', 'status', 'budget'].forEach((k) => {
       if (!state[k]) return;
       const sel = field(k);
       const text = (sel.selectedOptions[0] && sel.selectedOptions[0].textContent) || state[k];
@@ -689,6 +709,7 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   };
 
   const render = (animate = true) => {
+    subOptions();
     const list = sorted(cards.filter(matches));
     const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
     state.page = Math.min(state.page, pages);
@@ -723,14 +744,14 @@ const lenis = new Lenis({ duration: 1.15, smoothWheel: !reduceMotion });
   };
 
   // ----- events -----
-  tabs.forEach((t) => t.addEventListener('click', () => update({ type: t.dataset.type })));
-  ['city', 'status', 'budget', 'sort'].forEach((k) => field(k).addEventListener('change', (e) => update({ [k]: e.target.value })));
+  tabs.forEach((t) => t.addEventListener('click', () => update({ type: t.dataset.type, sub: '' })));
+  ['city', 'sub', 'status', 'budget'].forEach((k) => field(k).addEventListener('change', (e) => update({ [k]: e.target.value })));
   let t;
   field('q').addEventListener('input', (e) => {
     window.clearTimeout(t);
     t = window.setTimeout(() => update({ q: e.target.value.trim() }), 250);
   });
-  const reset = () => update({ type: 'all', q: '', city: '', status: '', budget: '', sort: '' });
+  const reset = () => update({ type: 'all', q: '', city: '', sub: '', status: '', budget: '' });
   document.getElementById('resetFilters').addEventListener('click', reset);
   document.querySelector('[data-reset]').addEventListener('click', reset);
 

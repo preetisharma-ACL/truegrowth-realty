@@ -2630,7 +2630,7 @@ img { max-width: 100%; display: block; }
    the controls stay in view while the grid scrolls, which is the point. */
 .listing__wrap {
   display: grid;
-  grid-template-columns: minmax(0, 286px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 370px) minmax(0, 1fr);
   gap: clamp(18px, 2.2vw, 38px);
   align-items: start;
 }
@@ -9161,3 +9161,14 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 .cfilter__reset-btn svg { transition: transform 0.4s var(--ease); }
 @media (max-width: 1199.98px) { .cfilter__reset-btn { flex: 1 1 calc(33.33% - 7px); min-height: 64px; } }
 @media (max-width: 575.98px) { .cfilter__reset-btn { flex: 1 1 100%; min-height: 52px; } }
+
+/* projects sidebar: everything sits inside the card's padding */
+#filters { padding: 20px; }
+#filters .ftabs,
+#filters .filters__top,
+#filters .filters__row,
+#filters .fsel,
+#filters .freset,
+#filters input[name="q"],
+#filters .filters__top > * { box-sizing: border-box; width: 100%; max-width: 100%; margin-left: 0; margin-right: 0; }
+#filters .freset { height: 48px; min-height: 48px; flex: none; justify-content: center; border-radius: 14px; }
