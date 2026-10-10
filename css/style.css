@@ -9088,3 +9088,9 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 
 /* project cards: breathing room between the "Starting from" label and the price */
 .pc__price small, .pcard__price small { display: block; margin-bottom: 6px; line-height: 1.2; }
+
+/* team cards: no gold arrow button, no gold line over the photo caption */
+.tmem .tmem__card .tmem__links .tmem__go { display: none; }
+.tmem__cap::before { display: none; }
+.tmem .tmem__card .tmem__rule, .tmem__rule { display: none; }
+.tmem .tmem__card .tmem__role { margin-bottom: 16px; }
