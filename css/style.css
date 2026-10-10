@@ -9172,3 +9172,41 @@ html:not([data-cat="residential"]) [data-only-cat="residential"] { display: none
 #filters input[name="q"],
 #filters .filters__top > * { box-sizing: border-box; width: 100%; max-width: 100%; margin-left: 0; margin-right: 0; }
 #filters .freset { height: 48px; min-height: 48px; flex: none; justify-content: center; border-radius: 14px; }
+
+/* project banner: type and status as two glass pills */
+.dh__eyebrow { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; letter-spacing: 0; }
+.dh__eyebrow::after { display: none; }
+.dh__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.dh__pill--status { color: #04223f; border-color: transparent; background: #e9c98a; }
+.dh__pill--status i { width: 7px; height: 7px; border-radius: 50%; background: #04223f; box-shadow: 0 0 0 3px rgba(4, 34, 63, 0.18); animation: dhDot 2s ease-in-out infinite; }
+@keyframes dhDot { 50% { box-shadow: 0 0 0 6px rgba(4, 34, 63, 0); } }
+@media (prefers-reduced-motion: reduce) { .dh__pill--status i { animation: none; } }
+
+/* blogs banner: the journal artwork carries its own title, so it shows in
+   full colour, centred, with the page name kept for screen readers only and
+   the trail at the foot */
+.phero--blog { align-items: flex-end; }
+.phero--blog .phero__bg img { object-position: center 50%; }
+.phero--blog .phero__shade { background: linear-gradient(180deg, transparent 72%, rgba(4, 14, 30, 0.6) 100%); }
+.phero--blog .phero__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.phero--blog .phero__crumbs { margin: 0; }
+.phero--blog .phero__shade { background: linear-gradient(180deg, transparent 62%, rgba(4, 14, 30, 0.82) 100%); }
+
+/* WhatsApp button stays a circle on hover: the text label is not shown */
+.float-wa__label, .float-wa:hover .float-wa__label, .float-wa:focus-visible .float-wa__label { display: none; }
+.float-wa:hover, .float-wa:focus-visible { width: 56px; }
